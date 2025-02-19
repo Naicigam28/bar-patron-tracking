@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-bar-app
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Postgress password variable not set}
+      - POSTGRES_USER=${POSTGRES_USER?postgres user variable not set}
+      - POSTGRES_DB=${POSTGRES_DB?Postgress DB Variable not set}
+
+  redis:
+    image: redis:latest
+    container_name: redis-bar-app
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
