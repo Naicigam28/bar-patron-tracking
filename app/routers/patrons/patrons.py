@@ -40,9 +40,10 @@ async def read_patrons(
 
 
 @router.get("/patrons/{patron_id}", tags=["patrons"])
-async def read_patron(patron_id: int):
+async def read_patron(session: SessionDep, patron_id: int):
     """Retrieve a single patron"""
-    return {"username": "fakeuser", "patron_id": patron_id}
+    patron = Patron.read_patron(session, patron_id)
+    return patron
 
 
 @router.post("/patrons/", tags=["patrons"])
@@ -54,8 +55,10 @@ async def create_patron(session: SessionDep, request: PostPatron):
 
 
 @router.put("/patrons/{patron_id}", tags=["patrons"])
-async def update_patron(patron_id: int):
+async def update_patron(session: SessionDep, patron_id: int, request: PostPatron):
     """Update a patron"""
+    mod_req = request.model_dump()
+    return Patron.update_patron(session, patron_id, mod_req)
     return {"username": "fakeuser", "patron_id": patron_id}
 
 

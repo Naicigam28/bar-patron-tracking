@@ -32,7 +32,7 @@ class Patron(SQLModel, table=True):
 
         return patrons, total, total_pages
 
-    def read_patron(self, session: Session, patron_id: int):
+    def read_patron(session: Session, patron_id: int):
         """Retrieve a single patron"""
         patron = session.get(Patron, patron_id)
         return patron
@@ -43,10 +43,11 @@ class Patron(SQLModel, table=True):
         session.commit()
         return self
 
-    def update_patron(self, session: Session, patron_id: int):
+    def update_patron(session: Session, patron_id: int,modified_patron: dict):
         """Update a patron"""
         patron = session.get(Patron, patron_id)
-        session.update(patron)
+        modified_patron["updated_at"] = datetime.now()
+        patron.sqlmodel_update(modified_patron)
         session.commit()
         return patron
 
