@@ -48,7 +48,8 @@ async def read_patron(patron_id: int):
 @router.post("/patrons/", tags=["patrons"])
 async def create_patron(session: SessionDep, request: PostPatron):
     """Create a new patron"""
-    new_patron = Patron(**request.model_dump())
+    new_patron_request = request.model_dump()
+    new_patron = Patron(**new_patron_request)
     return new_patron.create_patron(session)
 
 

@@ -1,5 +1,6 @@
 from sqlmodel import Field, Session, SQLModel, create_engine, select, func, DateTime
 from datetime import datetime
+import sqlalchemy as sa
 
 
 class Patron(SQLModel, table=True):
@@ -10,10 +11,14 @@ class Patron(SQLModel, table=True):
     phone: str
     weight: float
     gender: str
-    birthdate: DateTime
-    created_at: DateTime = Field(default=datetime.now)
-    updated_at: DateTime = Field(default=datetime.now)
-    deleted_at: DateTime | None = None
+    birthdate: datetime
+    created_at: datetime = Field(
+        sa_column=sa.Column(sa.DateTime, server_default=sa.func.now())
+    )
+    updated_at: datetime = Field(
+        sa_column=sa.Column(sa.DateTime, server_default=sa.func.now())
+    )
+    deleted_at: datetime | None = None
 
     def __repr__(self):
         return f"Patron {self.name} with id {self.id}"

@@ -5,8 +5,8 @@ from app.models import Patron
 
 
 class ListPatrons(BaseModel):
-    page: int
-    per_page: int
+    page: int=0
+    per_page: int=25
 
 
 class PostPatron(BaseModel):
@@ -15,7 +15,7 @@ class PostPatron(BaseModel):
     phone: str
     weight: float
     gender: str
-    birthdate: str
+    birthdate: datetime
 
 class PatronResponse(BaseModel):
     data: Optional[list[Patron]]
