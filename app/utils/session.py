@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Query
 from sqlmodel import Field, Session, SQLModel, create_engine, select
-from .Settings import settings
+from .settings import settings
 
 postgress_user = settings.postgres_user
 postgress_password = settings.postgres_password

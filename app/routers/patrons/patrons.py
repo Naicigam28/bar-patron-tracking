@@ -2,7 +2,7 @@ import logging
 
 from fastapi import APIRouter, Query
 from typing import Annotated
-from app.utils.Session import SessionDep
+from app.utils.session import SessionDep
 from app.schemas import ListPatrons, PatronResponse, PostPatron, Cocktail
 from app.models import Patron, PatronDrink
 from app.utils import fetch_drinks
