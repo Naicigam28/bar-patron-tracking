@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
-from app.models import Patron
+from app.models import Patron,PatronDrink
 
 
 class ListPatrons(BaseModel):
@@ -18,7 +18,7 @@ class PostPatron(BaseModel):
     birthdate: datetime
 
 class PatronResponse(BaseModel):
-    data: Optional[list[Patron]]
+    data: Optional[list[Patron|PatronDrink]]
     total: Optional[int]
     current_page: Optional[int]
     total_pages: Optional[int]

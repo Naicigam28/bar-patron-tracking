@@ -4,7 +4,7 @@ import requests
 
 from datetime import datetime
 from app.models import Patron
-from app.utils import measure_unit_to_ml
+from app.utils import measure_unit_to_ml, fetch_ingredients
 
 
 base_url = "https://www.thecocktaildb.com/api/json/v1/1/"
@@ -97,7 +97,9 @@ class Cocktail(BaseModel):
                 ingredient_abv = 0.0
             if ingredient_measure_ml is None:
                 ingredient_measure_ml = 0.0
-            total_abv += ingredient_abv*(ingredient.ingredient_measure_ml/total_volume)
+            total_abv += ingredient_abv * (
+                ingredient.ingredient_measure_ml / total_volume
+            )
         total_abv = round(total_abv, 2)
         self.abv = total_abv
         return total_abv
@@ -109,15 +111,3 @@ class Cocktail(BaseModel):
 
             self.volume += ingredient.ingredient_measure_ml
         return self.volume
-
-
-def fetch_ingredients(ingredient_name: str):
-    """Fetch a raw ingredient data by name"""
-    url = f"{search_url}?i={ingredient_name}"
-    print(url)
-    response = requests.request("GET", url)
-    response_data = response.json()
-    ingredients_data = response_data.get("ingredients", [])
-    if ingredients_data is None:
-        ingredients_data = []
-    return ingredients_data

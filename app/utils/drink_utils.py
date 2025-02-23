@@ -79,3 +79,14 @@ def measure_unit_to_ml(measure: str) -> float:
         result = round(result, 2)
         return result
     return 0.0
+
+def fetch_ingredients(ingredient_name: str):
+    """Fetch a raw ingredient data by name"""
+    url = f"{search_url}?i={ingredient_name}"
+    print(url)
+    response = requests.request("GET", url)
+    response_data = response.json()
+    ingredients_data = response_data.get("ingredients", [])
+    if ingredients_data is None:
+        ingredients_data = []
+    return ingredients_data
