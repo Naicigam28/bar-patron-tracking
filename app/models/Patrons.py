@@ -20,6 +20,12 @@ class Patron(SQLModel, table=True):
     )
     deleted_at: datetime | None = None
 
+    def create_patron(self, session: Session):
+        """Create a new patron"""
+        session.add(self)
+        session.commit()
+        return self
+
     def __repr__(self):
         return f"Patron {self.name} with id {self.id}"
 
@@ -37,13 +43,7 @@ class Patron(SQLModel, table=True):
         patron = session.get(Patron, patron_id)
         return patron
 
-    def create_patron(self, session: Session):
-        """Create a new patron"""
-        session.add(self)
-        session.commit()
-        return self
-
-    def update_patron(session: Session, patron_id: int,modified_patron: dict):
+    def update_patron(session: Session, patron_id: int, modified_patron: dict):
         """Update a patron"""
         patron = session.get(Patron, patron_id)
         modified_patron["updated_at"] = datetime.now()
@@ -51,7 +51,7 @@ class Patron(SQLModel, table=True):
         session.commit()
         return patron
 
-    def delete_patron(self, session: Session, patron_id: int):
+    def delete_patron(session: Session, patron_id: int):
         """Delete a patron"""
         patron = session.get(Patron, patron_id)
         session.delete(patron)

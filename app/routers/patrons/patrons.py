@@ -3,8 +3,9 @@ import logging
 from fastapi import APIRouter, Query
 from typing import Annotated
 from app.utils.Session import SessionDep
-from app.schemas import ListPatrons, PatronResponse, PostPatron
+from app.schemas import ListPatrons, PatronResponse, PostPatron, Cocktail
 from app.models import Patron
+from app.utils import fetch_drinks
 
 router = APIRouter()
 
@@ -43,6 +44,9 @@ async def read_patrons(
 async def read_patron(session: SessionDep, patron_id: int):
     """Retrieve a single patron"""
     patron = Patron.read_patron(session, patron_id)
+    if not patron:
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
+    patron = Patron.read_patron(session, patron_id)
     return patron
 
 
@@ -58,10 +62,37 @@ async def create_patron(session: SessionDep, request: PostPatron):
 async def update_patron(session: SessionDep, patron_id: int, request: PostPatron):
     """Update a patron"""
     mod_req = request.model_dump()
+    patron = Patron.read_patron(session, patron_id)
+    if not patron:
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
     return Patron.update_patron(session, patron_id, mod_req)
-    return {"username": "fakeuser", "patron_id": patron_id}
 
 
 @router.delete("/patrons/{patron_id}", tags=["patrons"])
-async def delete_patron(patron_id: int):
-    return {"username": "fakeuser", "patron_id": patron_id}
+async def delete_patron(session: SessionDep, patron_id: int):
+    """Delete a patron"""
+    patron = Patron.read_patron(session, patron_id)
+    if not patron:
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
+    return Patron.delete_patron(session, patron_id)
+
+
+@router.post("/patrons/{patron_id}/drinks/{drink_id}", tags=["Drinks"])
+async def add_drink_to_patron(
+    session: SessionDep,
+    patron_id: int,
+    drink_id: int,
+):
+    """Add a drink to a patron"""
+    logging.info(f"Patron ID: {patron_id}")
+    logging.info(f"Drink ID: {drink_id}")
+    
+    if drink_id:
+        drink = fetch_drinks(drink_id)
+        #convert drink dict to Cocktail object
+        if drink:
+            drink = Cocktail(**drink[0])
+        logging.info(f"Drink: {drink}")
+        return drink
+    else:
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
