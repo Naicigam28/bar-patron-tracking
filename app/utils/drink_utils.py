@@ -31,7 +31,6 @@ CONVERSIONS_RATES = {
 def fetch_drinks(drink_id: int):
     """Fetch a drink by ID"""
     url = f"{lookup_url}?i={drink_id}"
-    print(url)
     response = requests.request("GET", url)
     response_data = response.json()
     drinks_data = response_data.get("drinks", [])
@@ -83,7 +82,6 @@ def measure_unit_to_ml(measure: str) -> float:
 def fetch_ingredients(ingredient_name: str):
     """Fetch a raw ingredient data by name"""
     url = f"{search_url}?i={ingredient_name}"
-    print(url)
     response = requests.request("GET", url)
     response_data = response.json()
     ingredients_data = response_data.get("ingredients", [])
