@@ -50,6 +50,9 @@ Docker compose is used to orcastarate 3 containers:
 - Redis instance
 - The REST API
 
+Overview of how container interact:
+![".env" file in the root](/images/overview.jpeg)
+
 In order to bring up these containers this command is used
 
 ```docker compose up```
