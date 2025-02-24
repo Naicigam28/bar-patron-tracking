@@ -62,4 +62,8 @@ Run this command in the project root directory
 
 ```alembic upgrade head```
 
+## Check API
 
+Once up and running via docker compose the api should be reachable at http://localhost:8080
+
+The API root path should automatically route the swagger docs avaible at http://localhost:8080/docs
