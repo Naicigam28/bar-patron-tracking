@@ -1,4 +1,4 @@
-import logging
+from fastapi.logger import logger
 
 from fastapi import APIRouter, Query
 from typing import Annotated
@@ -23,7 +23,7 @@ async def read_patrons(
     query_params: Annotated[ListPatrons, Query()],
 ) -> PatronResponse:
     """Retrieve a list of patrons"""
-    logging.info(f"Query params: {query_params}")
+    logger.info(f"Query params: {query_params}")
 
     current_page = query_params.page
     results_per_page = query_params.per_page
@@ -114,8 +114,8 @@ async def add_drink_to_patron(
     drink_id: int,
 ):
     """Add a drink to a patron"""
-    logging.info(f"Patron ID: {patron_id}")
-    logging.info(f"Drink ID: {drink_id}")
+    logger.info(f"Patron ID: {patron_id}")
+    logger.info(f"Drink ID: {drink_id}")
 
     data = {"patron_id": patron_id, "drink_id": drink_id}
 
@@ -130,7 +130,7 @@ async def add_drink_to_patron(
 
         patron_drink = PatronDrink(**data)
         patron_drink.create_patron_drink(session)
-        logging.info(f"Drink: {drink}")
+        logger.info(f"Drink: {drink}")
         return drink
     else:
         return Response(status_code=status.HTTP_404_NOT_FOUND)

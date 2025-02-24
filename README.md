@@ -22,6 +22,8 @@ In order for the system to run the following varibales must be set:
 - POSTGRES_DB
 - POSTGRES_HOST
 - POSTGRES_PORT
+- REDIS_HOST
+- REDIS_PORT
 
 ### For example:
 ```
@@ -30,6 +32,8 @@ POSTGRES_USER=root
 POSTGRES_DB=bar_db
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
+REDIS_HOST=localhost
+REDIS_PORT=6379
 ```
 ## Setup python virtual environment
 

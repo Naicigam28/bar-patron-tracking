@@ -1,6 +1,7 @@
 import requests
-import logging
+from fastapi.logger import logger
 import re
+from .redis import set_key, get_key
 
 base_url = "https://www.thecocktaildb.com/api/json/v1/1/"
 search_url = base_url + "search.php"
@@ -31,14 +32,19 @@ CONVERSIONS_RATES = {
 def fetch_drinks(drink_id: int):
     """Fetch a drink by ID"""
     url = f"{lookup_url}?i={drink_id}"
+    cache_data = get_key(drink_id)
+    if cache_data:
+        return cache_data
     response = requests.request("GET", url)
     response_data = response.json()
     drinks_data = response_data.get("drinks", [])
     if drinks_data is None:
         drinks_data = []
-
+    if len(drinks_data) > 0:
+        set_key(drink_id, drinks_data)
     return drinks_data
-    
+
+
 def search_drinks(drink_name: str):
     """Search for a drink by name"""
     response = requests.request("GET", search_url)
@@ -48,14 +54,20 @@ def search_drinks(drink_name: str):
 def search_coctails(name: str):
     """Search for a coctail by name"""
     url = search_url + f"?s={name}"
+    cache_data = get_key(name)
+    if len(cache_data) > 0:
+        return cache_data
     response = requests.request("GET", url)
     response_data = response.json()
     drinks_data = response_data.get("drinks", [])
     if drinks_data is None:
         drinks_data = []
+    if len(drinks_data) > 0:
+        set_key(name, drinks_data)
+        for item in drinks_data:
+            set_key(item["idDrink"], item)
 
     return drinks_data
-    
 
 
 def list_all_coctails():
@@ -72,12 +84,13 @@ def measure_unit_to_ml(measure: str) -> float:
         return 0.0
     values = re.findall(r"\d+", parts[0])
     unit = parts[1]
-    
+
     if unit in CONVERSIONS_RATES.keys() and len(values) > 0:
-        result=CONVERSIONS_RATES[unit] * float(values[0])
+        result = CONVERSIONS_RATES[unit] * float(values[0])
         result = round(result, 2)
         return result
     return 0.0
+
 
 def fetch_ingredients(ingredient_name: str):
     """Fetch a raw ingredient data by name"""
